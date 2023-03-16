@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SSE } from "sse";
 
 const apiUrl = "https://api.openai.com/v1/completions";
@@ -68,6 +68,19 @@ function App() {
     setError("");
   };
 
+  const save = () => {
+    if (apiRef.current?.value) {
+      localStorage.setItem('api', apiRef.current.value);
+    }
+  }
+
+  useEffect(() => {
+    if (localStorage.getItem('api')) {
+      apiRef.current!.value = localStorage.getItem('api')!;
+    }
+  }, []);
+  
+
   return (
     <div className="min-w-screen min-h-screen h-full flex flex-col justify-center items-center bg-gradient-to-r from-cyan-900 to-blue-900 text-white">
       <div className="w-[90%] max-w-2xl">
@@ -89,13 +102,17 @@ function App() {
           }}
           className="flex flex-col gap-2"
         >
+          <div className="w-full relative mt-2">
           <input
             type="text"
             placeholder="API KEY"
-            className="px-4 py-2 mt-2 outline-none rounded-md bg-gray-50/10"
+            className="w-full px-4 py-2 outline-none rounded-md bg-gray-50/10"
             ref={apiRef}
             onChange={(e) =>  { setError('') } }
           />
+          <button className="absolute right-0 top-0 bottom-0 px-6 rounded-md bg-indigo-500 hover:bg-indigo-600" onClick={save}> Save </button>
+          </div>
+          
           <textarea
             ref={inputRef}
             className="outline-none bg-gray-50/10 p-4 my-2 rounded-md"
@@ -130,6 +147,7 @@ function App() {
          )}
         { !loading && (<div className="min-h-[64px] h-full my-4" ref={replyRef}></div>)}
         <p className="text-xs text-gray-50"> Powered by OpenAI </p>
+        <p className="my-2"> Made in 🌋 with 🔥! <a href="https://youtube.com/@dioveath">@dioveath</a> </p>
       </div>
     </div>
   );
